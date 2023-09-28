@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
-import { QuestionType } from "../interfaces/question";
 
 enum UIQuestionType {
     MultipleChoice = "Multiple Choice",
