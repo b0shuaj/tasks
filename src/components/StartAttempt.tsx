@@ -7,7 +7,7 @@ export function StartAttempt(): JSX.Element {
     const [inProgress, setInProgress] = useState(false);
 
     const startQuiz = () => {
-        if (attempts > 0) {
+        if (attempts > 0 && !inProgress) {
             setInProgress(true);
             setAttempts(attempts - 1);
         }
@@ -15,7 +15,6 @@ export function StartAttempt(): JSX.Element {
 
     const stopQuiz = () => {
         setInProgress(false);
-        setAttempts(originalAttempts);
     };
 
     const mulligan = () => {

@@ -1,12 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Button } from "react-bootstrap";
 
-/**
- * Here is a helper function you *must* use to "roll" your die.
- * The function uses the builtin `random` function of the `Math`
- * module (which returns a random decimal between 0 up until 1) in order
- * to produce a random integer between 1 and 6 (inclusive).
- */
 export function d6(): number {
     return 1 + Math.floor(Math.random() * 6);
 }
@@ -16,25 +10,27 @@ export function TwoDice(): JSX.Element {
     const [rightDie, setRightDie] = useState<number>(d6());
     const [gameOutcome, setOutcome] = useState<string | null>(null);
 
-    const rollLeftDie = () => {
+    const rollLeftDie = useCallback(() => {
         const newLeftDie = d6();
         setLeftDie(newLeftDie);
         checkOutcome(newLeftDie, rightDie);
-    };
+    }, [rightDie]);
 
-    const rollRightDie = () => {
+    const rollRightDie = useCallback(() => {
         const newRightDie = d6();
         setRightDie(newRightDie);
         checkOutcome(leftDie, newRightDie);
-    };
+    }, [leftDie]);
 
     const checkOutcome = (left: number, right: number) => {
+        if (left !== right) {
+            setOutcome(null); // Reset outcome if the numbers are not matching
+        }
+
         if (left === 1 && right === 1) {
             setOutcome("You rolled snake eyes! You Lose!");
         } else if (left === right) {
             setOutcome("You rolled matching numbers! You Win!");
-        } else {
-            setOutcome(null);
         }
     };
 
@@ -44,10 +40,18 @@ export function TwoDice(): JSX.Element {
                 <span data-testid="left-die">{leftDie}</span>
                 <span data-testid="right-die">{rightDie}</span>
             </div>
-            <Button variant="primary" onClick={rollLeftDie}>
+            <Button
+                variant="primary"
+                onClick={rollLeftDie}
+                data-testid="roll-left-button"
+            >
                 Roll Left Die
             </Button>
-            <Button variant="primary" onClick={rollRightDie}>
+            <Button
+                variant="primary"
+                onClick={rollRightDie}
+                data-testid="roll-right-button"
+            >
                 Roll Right Die
             </Button>
             {gameOutcome && <p>{gameOutcome}</p>}
